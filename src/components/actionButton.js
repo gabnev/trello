@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { addList, addCard } from "../actions";
 import { useDispatch } from "react-redux";
+import styled from "styled-components";
 
 import Icon from "@material-ui/core/Icon";
 import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
 import TextArea from "react-textarea-autosize";
+
+const CardContainer = styled.div`
+  margin-bottom: 8px;
+`;
 
 const ActionButton = ({ list, listID }) => {
   const [formOpen, setFormOpen] = useState(false);
