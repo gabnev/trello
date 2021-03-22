@@ -13,7 +13,7 @@ const ListContainer = styled.div`
   margin: 0 8px 0 0;
 `;
 
-const TrelloList = ({ title, cards, listID, index }) => {
+const List = ({ title, cards, listID, index }) => {
   return (
     <Draggable draggableId={String(listID)} index={index}>
       {(provided) => (
@@ -47,4 +47,4 @@ const TrelloList = ({ title, cards, listID, index }) => {
   );
 };
 
-export default TrelloList;
+export default List;

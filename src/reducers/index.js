@@ -1,57 +1,67 @@
 import { combineReducers } from "redux";
 import { CONSTANTS } from "../actions";
 
+// Setting both ids to 0 allows to pre-load cards from the BD, but breaks draggable. Having a hard coded initial state solved (for now)
 let listID = 2;
-let cardID = 4;
+let cardID = 3;
 
-const initialState = [
-  {
-    title: "Phase 1",
-    id: `list-${0}`,
-    cards: [
-      {
-        id: `card-${0}`,
-        text: "Some text 0",
-      },
-      {
-        id: `card-${1}`,
-        text: "Some text 1",
-      },
-    ],
-  },
-  {
-    title: "Phase 2",
-    id: `list-${1}`,
-    cards: [
-      {
-        id: `card-${2}`,
-        text: "Some text 3",
-      },
-      {
-        id: `card-${3}`,
-        text: "Some text 4",
-      },
-    ],
-  },
-];
+// const initialListState = [
+//   {
+//     userId: null,
+//     title: "My first list",
+//     id: "list-0",
+//     cards: [
+//       {
+//         id: "card-0",
+//         text: "My first card",
+//       },
+//       {
+//         id: "card-1",
+//         text: "My second card",
+//       },
+//     ],
+//   },
+// {
+//   title: "Phase 2",
+//   id: `list-${1}`,
+//   cards: [
+//     {
+//       id: `card-${2}`,
+//       text: "Some text 3",
+//     },
+//     {
+//       id: `card-${3}`,
+//       text: "Some text 4",
+//     },
+//   ],
+// },
+// ];
 
-const listsReducer = (state = initialState, action) => {
+const initialAuthState = {
+  isSignedIn: null,
+  userId: null,
+};
+
+const listsReducer = (state = [], action) => {
   switch (action.type) {
     case CONSTANTS.ADD_LIST:
       const newList = {
-        title: action.payload,
+        userId: action.payload.userId,
+        title: action.payload.title,
         cards: [],
         id: `list-${listID}`,
       };
       listID += 1;
+      // console.log("new list after addList:", newList);
       return [...state, newList];
 
     case CONSTANTS.ADD_CARD: {
       const newCard = {
         text: action.payload.text,
-        id: `list-${cardID}`,
+        id: `card-${cardID}`,
       };
       cardID += 1;
+      // console.log("new card after addCard:", newCard);
 
       const newState = state.map((list) => {
         if (list.id === action.payload.listID) {
@@ -73,7 +83,6 @@ const listsReducer = (state = initialState, action) => {
         droppableIdEnd,
         droppableIndexStart,
         droppableIndexEnd,
-        draggableId,
         type,
       } = action.payload;
 
@@ -114,6 +123,28 @@ const listsReducer = (state = initialState, action) => {
   }
 };
 
+const fetchListsReducer = (state = [], action) => {
+  switch (action.type) {
+    case CONSTANTS.FETCH_LISTS:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+const authReducer = (state = initialAuthState, action) => {
+  switch (action.type) {
+    case CONSTANTS.SIGN_IN:
+      return { ...state, isSignedIn: true, userId: action.payload };
+    case CONSTANTS.SIGN_OUT:
+      return { ...state, isSignedIn: false, userId: null };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   lists: listsReducer,
+  auth: authReducer,
+  fetch: fetchListsReducer,
 });
